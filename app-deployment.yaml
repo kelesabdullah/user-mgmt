@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-mgmt-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-mgmt
+  template:
+    metadata:
+      labels:
+        app: user-mgmt
+    spec:
+      containers:
+        - name: user-mgmt
+          image: kelesabdullah/user-mgmt:latest
+          imagePullPolicy: Always
+          env:
+            - name: MONGO_URI
+              value: 'user-mongo-srv'
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-mgmt-srv
+spec:
+  type: NodePort
+  selector:
+    app: user-mgmt
+  ports:
+    - name: user-mgmt
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
